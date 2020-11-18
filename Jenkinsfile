@@ -116,7 +116,7 @@ pipeline {
                         cmd_properties = cmd_properties + "acc.result=${TEMP_CATALOG}\\acc.json;acc.projectKey=${PROJECT_KEY};acc.check=${ACC_check};"
                         cmd_properties = cmd_properties + "acc.recreateProject=${ACC_recreateProject}\""
                         def command = "runner run --ibconnection /F${ACC_BASE} --db-user ${ACC_USER} --command ${cmd_properties}"
-                        command = command + " --execute \"${BIN_CATALOG}acc-export.epf\" --ordinaryapp=1")
+                        command = command + " --execute \"${BIN_CATALOG}acc-export.epf\" --ordinaryapp=1"
 
                         returnCode = commonMethods.cmdReturnStatusCode(command)
     

@@ -28,6 +28,7 @@ pipeline {
             steps {
                 script {
                     load "./SetEnvironmentVars.groovy"
+                    commonMethods = load "./lib/CommonMethods.groovy"
 
                     BIN_CATALOG = "${sonar_catalog}/bin/"
                     ACC_BASE = "${sonar_catalog}/ACC/"
@@ -100,6 +101,43 @@ pipeline {
                     catch (Throwable excp) {
                         caughtException = excp
                     }
+
+                    if (caughtException) {
+                        error caughtException.message
+                    }
+                }
+            }
+        }
+
+        stage('АПК') {
+            steps {
+                script {
+                    Exception caughtException = null
+
+                    try { timeout(time: env.TIMEOUT_FOR_ACC_STAGE.toInteger(), unit: 'MINUTES') {
+                        def cmd_properties = "\"acc.propertiesPaths=${ACC_PROPERTIES};acc.catalog=${CURRENT_CATALOG};acc.sources=${SRC};"
+                        cmd_properties = cmd_properties + "acc.result=${TEMP_CATALOG}\\acc.json;acc.projectKey=${PROJECT_KEY};acc.check=${ACC_check};"
+                        cmd_properties = cmd_properties + "acc.recreateProject=${ACC_recreateProject}\""
+                        def command = "runner run --ibconnection /F${ACC_BASE} --db-user ${ACC_USER} --command ${cmd_properties}"
+                        command = command + " --execute \"${BIN_CATALOG}acc-export.epf\" --ordinaryapp=1")
+
+                        returnCode = commonMethods.cmdReturnStatusCode(command)
+    
+                        echo "cmd status code $returnCode"
+    
+                        if (returnCode != 0) {
+                            commonMethods.echoAndError("Error creating DB ${base_name} at ${server1c}")
+                        }
+                    }}
+                        catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException excp) {
+                            if (commonMethods.isTimeoutException(excp)) {
+                                commonMethods.throwTimeoutException("${STAGE_NAME}")
+                            }
+                        }
+                        catch (Throwable excp) {
+                            echo "catched Throwable"
+                            caughtException = excp
+                        }
 
                     if (caughtException) {
                         error caughtException.message

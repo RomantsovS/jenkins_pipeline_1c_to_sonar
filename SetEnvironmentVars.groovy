@@ -9,3 +9,7 @@ env.STEBI_SETTINGS = ""
 
 
 env.TIMEOUT_FOR_CHECKOUT_STAGE = "5"
+
+
+//параметры для переопределения
+env.TIMEOUT_FOR_ACC_STAGE = "60"

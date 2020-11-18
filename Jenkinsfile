@@ -99,6 +99,7 @@ pipeline {
                     if (caughtException) {
                         error caughtException.message
                     }
+                }
             }
         }
     }

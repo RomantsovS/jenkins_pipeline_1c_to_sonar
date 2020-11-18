@@ -82,8 +82,8 @@ pipeline {
                             checkout([$class: 'GitSCM',
                             branches: [[name: "*/${git_repo_branch}"]],
                             doGenerateSubmoduleConfigurations: false,
-                            extensions: [[$class: 'CheckoutOption', timeout: 60], [$class: 'CloneOption', depth: 0, noTags: true, reference: '', shallow: false, timeout: 60]],
-                            submoduleCfg: [],
+                            extensions: [[$class: 'CheckoutOption', timeout: 60], [$class: 'CloneOption', depth: 0, noTags: true, reference: '', shallow: false,
+                            timeout: 60]], submoduleCfg: [],
                             userRemoteConfigs: [[/*credentialsId: git_credentials_Id, url: ${env.git_repo_url}*/]]])
                         }
                     }}

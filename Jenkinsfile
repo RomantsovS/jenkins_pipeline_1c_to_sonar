@@ -34,7 +34,7 @@ pipeline {
                         
                     CURRENT_CATALOG = pwd()
                     TEMP_CATALOG = "${CURRENT_CATALOG}\\sonar_temp"
-                    CURRENT_CATALOG = "${CURRENT_CATALOG}\\Repo"
+                    SRC = "./${CURRENT_CATALOG}/Repo/src"
 
                     // создаем/очищаем временный каталог
                     dir(TEMP_CATALOG) {
@@ -71,16 +71,15 @@ pipeline {
 
                             // Настройки инструментов
                             if (fileExists("./Repo/${PROPERTIES_CATALOG}/acc.properties")) {
-                                ACC_PROPERTIES = "./Repo/${PROPERTIES_CATALOG}/acc.properties"
-                                echo "file exists: ${ACC_PROPERTIES}"
+                                env.ACC_PROPERTIES = "./Repo/${PROPERTIES_CATALOG}/acc.properties"
+                                echo "file exists: ${env.ACC_PROPERTIES}"
                             }
 
                             if (fileExists("./Repo/${PROPERTIES_CATALOG}/bsl-language-server.conf")) {
-                                BSL_LS_PROPERTIES = "./Repo/${PROPERTIES_CATALOG}/bsl-language-server.conf"
-                                echo "file exists: ${BSL_LS_PROPERTIES}"
+                                env.BSL_LS_PROPERTIES = "./Repo/${PROPERTIES_CATALOG}/bsl-language-server.conf"
+                                echo "file exists: ${env.BSL_LS_PROPERTIES}"
                             }
 
-                            SRC = "./${PROJECT_NAME}/src"
                             if (git_repo_branch == 'master') {
                                 PROJECT_KEY = PROJECT_NAME
                             } else {
@@ -110,14 +109,14 @@ pipeline {
                     Exception caughtException = null
 
                     try { timeout(time: env.TIMEOUT_FOR_ACC_STAGE.toInteger(), unit: 'MINUTES') {
-                        def cmd_properties = "\"acc.propertiesPaths=${ACC_PROPERTIES};acc.catalog=${CURRENT_CATALOG};acc.sources=${SRC};"
+                        def cmd_properties = "\"acc.propertiesPaths=${env.ACC_PROPERTIES};acc.catalog=${CURRENT_CATALOG}/Repo;acc.sources=${SRC};"
                         cmd_properties = cmd_properties + "acc.result=${TEMP_CATALOG}\\acc.json;acc.projectKey=${PROJECT_KEY};acc.check=${ACC_check};"
                         cmd_properties = cmd_properties + "acc.recreateProject=${ACC_recreateProject}\""
                         
                         def ib_connection = "/S${env.ACC_BASE_SERVER1C}\\${env.ACC_BASE_NAME}"
                         
-                        def command = "runner run --ibconnection ${ib_connection} --db-user ${ACC_USER} --command ${cmd_properties}"
-                        command = command + " --execute \"${BIN_CATALOG}acc-export.epf\" --ordinaryapp=1"
+                        def command = "runner run --ibconnection ${ib_connection} --db-user ${env.ACC_USER} --command ${cmd_properties}"
+                        command = command + " --execute \"./acc-export.epf" --ordinaryapp=1"
 
                         returnCode = commonMethods.cmdReturnStatusCode(command)
     

@@ -7,7 +7,9 @@ env.sonar_catalog = "C:/Sonar"
 env.PROPERTIES_CATALOG = "./sonar"
 env.STEBI_SETTINGS = ""
 
-
+env.ACC_BASE_NAME = "AutoConfigurationCheck"
+anv.ACC_BASE_SERVER1C = "cv8app12:1741"
+env.ACC_USER = "Administrator"
 
 env.TIMEOUT_FOR_CHECKOUT_STAGE = "5"
 

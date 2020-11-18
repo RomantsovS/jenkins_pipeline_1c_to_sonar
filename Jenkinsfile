@@ -31,8 +31,6 @@ pipeline {
                     commonMethods = load "./lib/CommonMethods.groovy"
 
                     BIN_CATALOG = "${sonar_catalog}/bin/"
-                    ACC_BASE = "${sonar_catalog}/ACC/"
-                    ACC_USER = 'Admin'
                         
                     CURRENT_CATALOG = pwd()
                     TEMP_CATALOG = "${CURRENT_CATALOG}\\sonar_temp"
@@ -115,7 +113,10 @@ pipeline {
                         def cmd_properties = "\"acc.propertiesPaths=${ACC_PROPERTIES};acc.catalog=${CURRENT_CATALOG};acc.sources=${SRC};"
                         cmd_properties = cmd_properties + "acc.result=${TEMP_CATALOG}\\acc.json;acc.projectKey=${PROJECT_KEY};acc.check=${ACC_check};"
                         cmd_properties = cmd_properties + "acc.recreateProject=${ACC_recreateProject}\""
-                        def command = "runner run --ibconnection /F${ACC_BASE} --db-user ${ACC_USER} --command ${cmd_properties}"
+                        
+                        def ib_connection = "/S${env.ACC_BASE_SERVER1C}\\${env.ACC_BASE_NAME}"
+                        
+                        def command = "runner run --ibconnection ${ib_connection} --db-user ${ACC_USER} --command ${cmd_properties}"
                         command = command + " --execute \"${BIN_CATALOG}acc-export.epf\" --ordinaryapp=1"
 
                         returnCode = commonMethods.cmdReturnStatusCode(command)
@@ -123,7 +124,7 @@ pipeline {
                         echo "cmd status code $returnCode"
     
                         if (returnCode != 0) {
-                            commonMethods.echoAndError("Error creating DB ${base_name} at ${server1c}")
+                            commonMethods.echoAndError("Error running ACC ${ACC_BASE} at ${server1c}")
                         }
                     }}
                         catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException excp) {

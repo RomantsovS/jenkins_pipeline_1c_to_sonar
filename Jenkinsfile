@@ -34,7 +34,7 @@ pipeline {
                         
                     CURRENT_CATALOG = pwd()
                     TEMP_CATALOG = "${CURRENT_CATALOG}\\sonar_temp"
-                    SRC = "./${CURRENT_CATALOG}/Repo/src"
+                    SRC = "${CURRENT_CATALOG}/Repo/src"
 
                     // создаем/очищаем временный каталог
                     dir(TEMP_CATALOG) {
@@ -103,7 +103,7 @@ pipeline {
             }
         }
 
-        stage('АПК') {
+        stage('ACC') {
             steps {
                 script {
                     Exception caughtException = null
@@ -123,23 +123,54 @@ pipeline {
                         echo "cmd status code $returnCode"
     
                         if (returnCode != 0) {
-                            commonMethods.echoAndError("Error running ACC ${ACC_BASE} at ${server1c}")
+                            commonMethods.echoAndError("Error running ACC ${ACC_BASE_NAME} at ${ACC_BASE_SERVER1C}")
                         }
                     }}
-                        catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException excp) {
-                            if (commonMethods.isTimeoutException(excp)) {
-                                commonMethods.throwTimeoutException("${STAGE_NAME}")
-                            }
+                    catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException excp) {
+                        if (commonMethods.isTimeoutException(excp)) {
+                            commonMethods.throwTimeoutException("${STAGE_NAME}")
                         }
-                        catch (Throwable excp) {
-                            echo "catched Throwable"
-                            caughtException = excp
-                        }
+                    }
+                    catch (Throwable excp) {
+                        caughtException = excp
+                    }
 
                     if (caughtException) {
                         error caughtException.message
                     }
                 }
+            }
+        }
+
+        stage('bsl-language-server') {
+            steps {
+                script {
+                    Exception caughtException = null
+
+                    try { timeout(time: env.TIMEOUT_FOR_ACC_STAGE.toInteger(), unit: 'MINUTES') {
+                        def command = "java -Xmx8g -jar ${BIN_CATALOG}bsl-language-server.jar -a -s \"${SRC}\" -r generic"
+                        command = command + " -c \"${BSL_LS_PROPERTIES}\" -o \"${TEMP_CATALOG}\""
+
+                        returnCode = commonMethods.cmdReturnStatusCode(command)
+    
+                        echo "cmd status code $returnCode"
+    
+                        if (returnCode != 0) {
+                            commonMethods.echoAndError("Error running bsl-language-server ${ACC_BASE_NAME} at ${ACC_BASE_SERVER1C}")
+                        }
+                    }}
+                    catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException excp) {
+                        if (commonMethods.isTimeoutException(excp)) {
+                            commonMethods.throwTimeoutException("${STAGE_NAME}")
+                        }
+                    }
+                    catch (Throwable excp) {
+                        caughtException = excp
+                    }
+
+                    if (caughtException) {
+                        error caughtException.message
+                    }
             }
         }
     }

@@ -66,7 +66,7 @@ pipeline {
 
                             load "./${PROPERTIES_CATALOG}/SetEnvironmentVars.groovy"
 
-                            if(env.PROJECT_NAME = null || env.PROJECT_NAME.isEmpty()) {
+                            if(env.PROJECT_NAME == null || env.PROJECT_NAME.isEmpty()) {
                                 commonMethods.echoAndError("env.PROJECT_NAME is not setup in SetEnvironmentVars.groovy")
                             }
                             echo "PROJECT_NAME: ${env.PROJECT_NAME}"

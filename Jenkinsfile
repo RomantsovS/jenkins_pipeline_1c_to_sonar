@@ -34,23 +34,6 @@ pipeline {
                     ACC_BASE = "${sonar_catalog}/ACC/"
                     ACC_USER = 'Admin'
                     SRC = "./${PROJECT_NAME}/src"
-
-                    // Настройки инструментов
-                    ACC_PROPERTIES = "./Repo/${PROPERTIES_CATALOG}/acc.properties"
-                    if (fileExists(ACC_PROPERTIES)) {
-                        echo "file exists: ${ACC_PROPERTIES}"
-                    } else {
-                        echo "file does not exist: ${ACC_PROPERTIES}"
-                        ACC_PROPERTIES = "./Sonar/acc.properties"
-                    }
-                    
-                    BSL_LS_PROPERTIES = "./Repo/${PROPERTIES_CATALOG}/bsl-language-server.conf"
-                    if (fileExists(BSL_LS_PROPERTIES)) {
-                        echo "file exists: ${BSL_LS_PROPERTIES}"
-                    } else {
-                        echo "file does not exist: ${BSL_LS_PROPERTIES}"
-                        BSL_LS_PROPERTIES = "./Sonar/bsl-language-server.conf"
-                    }
                         
                     CURRENT_CATALOG = pwd()
                     TEMP_CATALOG = "${CURRENT_CATALOG}\\sonar_temp"
@@ -91,7 +74,17 @@ pipeline {
                             load "./${PROPERTIES_CATALOG}/SetEnvironmentVars.groovy"
 
                             echo "PROJECT_NAME: ${env.PROJECT_NAME}"
-                        }
+
+                            // Настройки инструментов
+                            if (fileExists("./Repo/${PROPERTIES_CATALOG}/acc.properties")) {
+                                ACC_PROPERTIES = "./Repo/${PROPERTIES_CATALOG}/acc.properties"
+                                echo "file exists: ${ACC_PROPERTIES}"
+                            }
+
+                            if (fileExists("./Repo/${PROPERTIES_CATALOG}/bsl-language-server.conf")) {
+                                BSL_LS_PROPERTIES = "./Repo/${PROPERTIES_CATALOG}/bsl-language-server.conf"
+                                echo "file exists: ${BSL_LS_PROPERTIES}"
+                            }
                     }}
                     catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException excp) {
                         if (commonMethods.isTimeoutException(excp)) {

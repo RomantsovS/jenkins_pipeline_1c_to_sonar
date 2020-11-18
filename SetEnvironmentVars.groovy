@@ -8,8 +8,12 @@ env.PROPERTIES_CATALOG = "./sonar"
 env.STEBI_SETTINGS = ""
 
 
+
 env.TIMEOUT_FOR_CHECKOUT_STAGE = "5"
 
 
 //параметры для переопределения
 env.TIMEOUT_FOR_ACC_STAGE = "60"
+
+env.ACC_PROPERTIES = "./acc.properties"
+env.BSL_LS_PROPERTIES = "./bsl-language-server.conf"

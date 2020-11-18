@@ -10,6 +10,7 @@ def PROJECT_KEY
 pipeline {
 
     parameters {
+        string(defaultValue: "${env.git_repo_url}", description: '* URL к гит-репозиторию, который необходимо проверить.', name: 'git_repo_url')
         booleanParam(defaultValue: env.ACC_check== null ? true : env.ACC_check, description: 'Выполнять ли проверку АПК. Если нет, то будут получены существующие результаты. По умолчанию: true', name: 'ACC_check')
         booleanParam(defaultValue: env.ACC_recreateProject== null ? false : env.ACC_recreateProject, description: 'Пересоздать проект в АПК. Все данные о проекте будут собраны заново. По умолчанию: false', name: 'ACC_recreateProject')
         string(defaultValue: "${env.jenkinsAgent}", description: 'Нода дженкинса, на которой запускать пайплайн. По умолчанию master', name: 'jenkinsAgent')
@@ -84,7 +85,11 @@ pipeline {
                             doGenerateSubmoduleConfigurations: false,
                             extensions: [[$class: 'CheckoutOption', timeout: 60], [$class: 'CloneOption', depth: 0, noTags: true, reference: '', shallow: false,
                             timeout: 60]], submoduleCfg: [],
-                            userRemoteConfigs: [[/*credentialsId: git_credentials_Id,*/ url: "${env.git_repo_url}"]]])
+                            userRemoteConfigs: [[/*credentialsId: git_credentials_Id,*/ url: git_repo_url]]])
+
+                            load "./SetEnvironmentVars.groovy"
+
+                            echo "PROJECT_NAME: ${env.PROJECT_NAME}"
                         }
                     }}
                     catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException excp) {

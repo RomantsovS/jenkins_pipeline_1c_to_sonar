@@ -10,10 +10,8 @@ pipeline {
         booleanParam(defaultValue: env.ACC_recreateProject== null ? false : env.ACC_recreateProject, description: 'Пересоздать проект в АПК. Все данные о проекте будут собраны заново. По умолчанию: false', name: 'ACC_recreateProject')
         string(defaultValue: "${env.STEBI_SETTINGS}", description: 'Файл настроек для переопределения замечаний. Для файла из репо проекта должен начинатся с папки Repo, например .Repo/Sonar/settings.json. По умолчанию ./Sonar/settings.json', name: 'STEBI_SETTINGS')
         string(defaultValue: "${env.jenkinsAgent}", description: 'Нода дженкинса, на которой запускать пайплайн. По умолчанию master', name: 'jenkinsAgent')
-        string(defaultValue: "${env.EDT_VERSION}", description: 'Используемая версия EDT. По умолчанию 1.13.0', name: 'EDT_VERSION')
         string(defaultValue: "${env.perf_catalog}", description: 'Путь к каталогу с замерами производительности, на основе которых будет рассчитано покрытие. Если пусто - покрытие не считается.', name: 'perf_catalog')
         string(defaultValue: "${env.git_credentials_Id}", description: 'ID Credentials для получения изменений из гит-репозитория', name: 'git_credentials_Id')
-        string(defaultValue: "${env.rocket_channel}", description: 'Канал в рокет-чате для отправки уведомлений', name: 'rocket_channel')
     }
     agent {
         label "${(env.jenkinsAgent == null || env.jenkinsAgent == 'null') ? "master" : env.jenkinsAgent}"
@@ -27,17 +25,10 @@ pipeline {
             steps {
                 timestamps {
                     script {
-
-                        rocket_channel = rocket_channel == null || rocket_channel == 'null' ? '' : rocket_channel
-
-                        if (!rocket_channel.isEmpty() ) {
-                            rocketSend channel: rocket_channel, message: "Sonar check started: [${env.JOB_NAME} ${env.BUILD_NUMBER}](${env.JOB_URL})", rawMessage: true
-                        }
                         // Инициализация параметров значениями по умолчанию
                         sonar_catalog = sonar_catalog.isEmpty() ? "C:/Sonar/" : sonar_catalog
                         PROPERTIES_CATALOG = PROPERTIES_CATALOG.isEmpty() ? "./Sonar" : PROPERTIES_CATALOG
                         
-                        EDT_VERSION = EDT_VERSION.isEmpty() ? '1.13.0' : EDT_VERSION
                         STEBI_SETTINGS = STEBI_SETTINGS.isEmpty() ? './Sonar/settings.json' : STEBI_SETTINGS
                         git_repo_branch = git_repo_branch.isEmpty() ? 'master' : git_repo_branch
 

@@ -88,6 +88,7 @@ pipeline {
                             } else {
                                 PROJECT_KEY = "${PROJECT_NAME}_${git_repo_branch}"
                             }
+                        }
                     }}
                     catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException excp) {
                         if (commonMethods.isTimeoutException(excp)) {

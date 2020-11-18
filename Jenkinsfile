@@ -75,15 +75,30 @@ pipeline {
         stage('Checkout') {
             steps {
                 script {
-                    dir('Repo') {
-                        checkout([$class: 'GitSCM',
-                        branches: [[name: "*/${git_repo_branch}"]],
-                        doGenerateSubmoduleConfigurations: false,
-                        extensions: [[$class: 'CheckoutOption', timeout: 60], [$class: 'CloneOption', depth: 0, noTags: true, reference: '', shallow: false, timeout: 60]],
-                        submoduleCfg: [],
-                        userRemoteConfigs: [[credentialsId: git_credentials_Id, url: git_repo_url]]])
+                    Exception caughtException = null
+
+                    try { timeout(time: env.TIMEOUT_FOR_CHECKOUT_STAGE.toInteger(), unit: 'MINUTES') {
+                        dir('Repo') {
+                            checkout([$class: 'GitSCM',
+                            branches: [[name: "*/${git_repo_branch}"]],
+                            doGenerateSubmoduleConfigurations: false,
+                            extensions: [[$class: 'CheckoutOption', timeout: 60], [$class: 'CloneOption', depth: 0, noTags: true, reference: '', shallow: false, timeout: 60]],
+                            submoduleCfg: [],
+                            userRemoteConfigs: [[/*credentialsId: git_credentials_Id, url: ${env.git_repo_url}*/]]])
+                        }
+                    }}
+                    catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException excp) {
+                        if (commonMethods.isTimeoutException(excp)) {
+                            commonMethods.throwTimeoutException("${STAGE_NAME}")
+                        }
                     }
-                }
+                    catch (Throwable excp) {
+                        caughtException = excp
+                    }
+
+                    if (caughtException) {
+                        error caughtException.message
+                    }
             }
         }
     }

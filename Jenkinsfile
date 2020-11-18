@@ -5,7 +5,7 @@ def ACC_USER = ''
 def BSL_LS_PROPERTIES = ''
 def CURRENT_CATALOG = ''
 def TEMP_CATALOG = ''
-def PROJECT_KEY
+def PROJECT_KEY = ''
 
 pipeline {
 
@@ -33,7 +33,6 @@ pipeline {
                     BIN_CATALOG = "${sonar_catalog}/bin/"
                     ACC_BASE = "${sonar_catalog}/ACC/"
                     ACC_USER = 'Admin'
-                    SRC = "./${PROJECT_NAME}/src"
                         
                     CURRENT_CATALOG = pwd()
                     TEMP_CATALOG = "${CURRENT_CATALOG}\\sonar_temp"
@@ -44,15 +43,9 @@ pipeline {
                         deleteDir()
                         writeFile file: 'acc.json', text: '{"issues": []}'
                         writeFile file: 'bsl-generic-json.json', text: '{"issues": []}'
-                        writeFile file: 'edt.json', text: '{"issues": []}'
                     }
 
-                    if (git_repo_branch == 'master') {
-                        PROJECT_KEY = PROJECT_NAME
-                    } else {
-                        PROJECT_KEY = "${PROJECT_NAME}_${git_repo_branch}"
-                    }
-                        GENERIC_ISSUE_JSON ="${TEMP_CATALOG}/acc.json,${TEMP_CATALOG}/bsl-generic-json.json,${TEMP_CATALOG}/edt.json"
+                    GENERIC_ISSUE_JSON ="${TEMP_CATALOG}/acc.json,${TEMP_CATALOG}/bsl-generic-json.json,${TEMP_CATALOG}/edt.json"
                     }
                 }
         }
@@ -73,6 +66,9 @@ pipeline {
 
                             load "./${PROPERTIES_CATALOG}/SetEnvironmentVars.groovy"
 
+                            if(env.PROJECT_NAME = null || env.PROJECT_NAME.isEmpty()) {
+                                commonMethods.echoAndError("env.PROJECT_NAME is not setup in SetEnvironmentVars.groovy")
+                            }
                             echo "PROJECT_NAME: ${env.PROJECT_NAME}"
 
                             // Настройки инструментов
@@ -84,6 +80,13 @@ pipeline {
                             if (fileExists("./Repo/${PROPERTIES_CATALOG}/bsl-language-server.conf")) {
                                 BSL_LS_PROPERTIES = "./Repo/${PROPERTIES_CATALOG}/bsl-language-server.conf"
                                 echo "file exists: ${BSL_LS_PROPERTIES}"
+                            }
+
+                            SRC = "./${PROJECT_NAME}/src"
+                            if (git_repo_branch == 'master') {
+                                PROJECT_KEY = PROJECT_NAME
+                            } else {
+                                PROJECT_KEY = "${PROJECT_NAME}_${git_repo_branch}"
                             }
                     }}
                     catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException excp) {

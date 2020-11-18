@@ -87,7 +87,7 @@ pipeline {
                             timeout: 60]], submoduleCfg: [],
                             userRemoteConfigs: [[/*credentialsId: git_credentials_Id,*/ url: git_repo_url]]])
 
-                            load "./SetEnvironmentVars.groovy"
+                            load "./${PROPERTIES_CATALOG}/SetEnvironmentVars.groovy"
 
                             echo "PROJECT_NAME: ${env.PROJECT_NAME}"
                         }

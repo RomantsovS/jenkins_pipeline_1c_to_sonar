@@ -156,7 +156,7 @@ pipeline {
                         echo "cmd status code $returnCode"
     
                         if (returnCode != 0) {
-                            commonMethods.echoAndError("Error running bsl-language-server ${ACC_BASE_NAME} at ${ACC_BASE_SERVER1C}")
+                            commonMethods.echoAndError("Error running bsl-language-server ${BIN_CATALOG} at ${TEMP_CATALOG}")
                         }
                     }}
                     catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException excp) {

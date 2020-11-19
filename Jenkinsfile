@@ -176,7 +176,7 @@ pipeline {
             }
         }
 
-        stage('Сканер') {
+        stage('Sonar scanner') {
             steps {
                 script {
                     Exception caughtException = null
@@ -207,7 +207,7 @@ pipeline {
                                 echo "cmd status code $returnCode"
     
                                 if (returnCode != 0) {
-                                    commonMethods.echoAndError("Error running bsl-language-server ${BIN_CATALOG} at ${TEMP_CATALOG}")
+                                    commonMethods.echoAndError("Error running Sonar scanner")
                                 }
                             }
                         }

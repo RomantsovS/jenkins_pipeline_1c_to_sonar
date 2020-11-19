@@ -197,9 +197,6 @@ pipeline {
                                 def command = """
                                 @set SRC=\"${SRC}\"
                                 @echo %SRC%
-                                @call stebi g > temp_SONAR_PROJECTVERSION
-                                @set /p SONAR_PROJECTVERSION=<temp_SONAR_PROJECTVERSION
-                                @DEL temp_SONAR_PROJECTVERSION
                                 @echo %SONAR_PROJECTVERSION%
                                 @set JAVA_HOME=${env.JAVA_11_HOME}\\
                                 @set SONAR_SCANNER_OPTS=-Xmx6g

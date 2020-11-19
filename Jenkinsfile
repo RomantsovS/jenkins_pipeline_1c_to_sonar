@@ -184,10 +184,10 @@ pipeline {
                     try { timeout(time: env.TIMEOUT_FOR_ACC_STAGE.toInteger(), unit: 'MINUTES') {
                         dir('Repo') {
                             withSonarQubeEnv('Sonar') {
-                                def scanner_properties = "-X -Dsonar.projectVersion=%SONAR_PROJECTVERSION% -Dsonar.projectKey=${PROJECT_KEY}
+                                def scanner_properties = """-X -Dsonar.projectVersion=%SONAR_PROJECTVERSION% -Dsonar.projectKey=${PROJECT_KEY}
                                 -Dsonar.sources=\"${SRC}\" -Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON}
                                 -Dsonar.sourceEncoding=UTF-8 -Dsonar.inclusions=**/*.bsl
-                                -Dsonar.bsl.languageserver.enabled=false"
+                                -Dsonar.bsl.languageserver.enabled=false"""
                             /*if (!perf_catalog.isEmpty()) {
                                 scanner_properties = "${scanner_properties} -Dsonar.coverageReportPaths=\"${TEMP_CATALOG}\\genericCoverage.xml\""
                             }*/
@@ -201,8 +201,7 @@ pipeline {
                                 @echo %SONAR_PROJECTVERSION%
                                 @set JAVA_HOME=${sonar_catalog}\\jdk\\
                                 @set SONAR_SCANNER_OPTS=-Xmx6g
-                                ${scannerHome}\\bin\\sonar-scanner ${scanner_properties} -Dfile.encoding=UTF-8
-                                """
+                                ${scannerHome}\\bin\\sonar-scanner ${scanner_properties} -Dfile.encoding=UTF-8"""
                                 
                                 returnCode = commonMethods.cmdReturnStatusCode(command)
     

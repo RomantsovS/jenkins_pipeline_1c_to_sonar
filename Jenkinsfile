@@ -225,15 +225,14 @@ pipeline {
                     if (caughtException) {
                         error caughtException.message
                     }
-                    }
                 }
             }
+        }
 
-            post {
-                always {
+        post {
+            always {
                 script {
                     commonMethods.emailJobStatus ("SONAR STATUS")
-                }
                 }
             }
         }

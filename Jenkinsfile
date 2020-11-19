@@ -44,7 +44,7 @@ pipeline {
                         writeFile file: 'bsl-generic-json.json', text: '{"issues": []}'
                     }
 
-                    GENERIC_ISSUE_JSON ="${TEMP_CATALOG}/acc.json,${TEMP_CATALOG}/bsl-generic-json.json,${TEMP_CATALOG}/edt.json"
+                    GENERIC_ISSUE_JSON ="${TEMP_CATALOG}/acc.json,${TEMP_CATALOG}/bsl-generic-json.json"
                     }
                 }
         }
@@ -150,7 +150,7 @@ pipeline {
 
                     try { timeout(time: env.TIMEOUT_FOR_ACC_STAGE.toInteger(), unit: 'MINUTES') {
                         def command = "${env.JAVA_11_BIN}/java -Xmx8g -jar ${BIN_CATALOG}bsl-language-server.jar -a -s \"${SRC}\" -r generic"
-                        command = command + " -c \"${BSL_LS_PROPERTIES}\" -o \"${TEMP_CATALOG}\""
+                        command = command + " -c \"${env.BSL_LS_PROPERTIES}\" -o \"${TEMP_CATALOG}\""
 
                         returnCode = commonMethods.cmdReturnStatusCode(command)
     
@@ -172,6 +172,69 @@ pipeline {
                     if (caughtException) {
                         error caughtException.message
                     }
+                }
+            }
+        }
+
+        stage('Сканер') {
+            steps {
+                script {
+                    Exception caughtException = null
+
+                    try { timeout(time: env.TIMEOUT_FOR_ACC_STAGE.toInteger(), unit: 'MINUTES') {
+                        dir('Repo') {
+                            withSonarQubeEnv('Sonar') {
+                                def scanner_properties = "-X -Dsonar.projectVersion=%SONAR_PROJECTVERSION% -Dsonar.projectKey=${PROJECT_KEY}
+                                -Dsonar.sources=\"${SRC}\" -Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON}
+                                -Dsonar.sourceEncoding=UTF-8 -Dsonar.inclusions=**/*.bsl
+                                -Dsonar.bsl.languageserver.enabled=false"
+                            /*if (!perf_catalog.isEmpty()) {
+                                scanner_properties = "${scanner_properties} -Dsonar.coverageReportPaths=\"${TEMP_CATALOG}\\genericCoverage.xml\""
+                            }*/
+                                def scannerHome = tool 'SonarQubeScanner';
+                                def command = """
+                                @set SRC=\"${SRC}\"
+                                @echo %SRC%
+                                @call stebi g > temp_SONAR_PROJECTVERSION
+                                @set /p SONAR_PROJECTVERSION=<temp_SONAR_PROJECTVERSION
+                                @DEL temp_SONAR_PROJECTVERSION
+                                @echo %SONAR_PROJECTVERSION%
+                                @set JAVA_HOME=${sonar_catalog}\\jdk\\
+                                @set SONAR_SCANNER_OPTS=-Xmx6g
+                                ${scannerHome}\\bin\\sonar-scanner ${scanner_properties} -Dfile.encoding=UTF-8
+                                """
+                                
+                                returnCode = commonMethods.cmdReturnStatusCode(command)
+    
+                                echo "cmd status code $returnCode"
+    
+                                if (returnCode != 0) {
+                                    commonMethods.echoAndError("Error running bsl-language-server ${BIN_CATALOG} at ${TEMP_CATALOG}")
+                                }
+                            }
+                        }
+                    }}
+                    catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException excp) {
+                        if (commonMethods.isTimeoutException(excp)) {
+                            commonMethods.throwTimeoutException("${STAGE_NAME}")
+                        }
+                    }
+                    catch (Throwable excp) {
+                        caughtException = excp
+                    }
+
+                    if (caughtException) {
+                        error caughtException.message
+                    }
+                    }
+                }
+            }
+
+            post {
+                always {
+                script {
+                    commonMethods.emailJobStatus ("SONAR STATUS")
+                }
                 }
             }
         }

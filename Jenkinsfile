@@ -6,6 +6,7 @@ def BSL_LS_PROPERTIES = ''
 def CURRENT_CATALOG = ''
 def TEMP_CATALOG = ''
 def PROJECT_KEY = ''
+def JAVA_11_BIN = ''
 
 pipeline {
 
@@ -148,7 +149,7 @@ pipeline {
                     Exception caughtException = null
 
                     try { timeout(time: env.TIMEOUT_FOR_ACC_STAGE.toInteger(), unit: 'MINUTES') {
-                        def command = "java -Xmx8g -jar ${BIN_CATALOG}bsl-language-server.jar -a -s \"${SRC}\" -r generic"
+                        def command = "${env.JAVA_11_BIN}/java -Xmx8g -jar ${BIN_CATALOG}bsl-language-server.jar -a -s \"${SRC}\" -r generic"
                         command = command + " -c \"${BSL_LS_PROPERTIES}\" -o \"${TEMP_CATALOG}\""
 
                         returnCode = commonMethods.cmdReturnStatusCode(command)

@@ -31,7 +31,7 @@ pipeline {
                     load "./SetEnvironmentVars.groovy"
                     commonMethods = load "./lib/CommonMethods.groovy"
 
-                    BIN_CATALOG = "${sonar_catalog}/bin/"
+                    BIN_CATALOG = "${env.sonar_catalog}/bin/"
                         
                     CURRENT_CATALOG = pwd()
                     TEMP_CATALOG = "${CURRENT_CATALOG}\\sonar_temp"
@@ -57,7 +57,7 @@ pipeline {
                     try { timeout(time: env.TIMEOUT_FOR_CHECKOUT_STAGE.toInteger(), unit: 'MINUTES') {
                         dir('Repo') {
                             checkout([$class: 'GitSCM',
-                            branches: [[name: "*/${git_repo_branch}"]],
+                            branches: [[name: "*/${env.git_repo_branch}"]],
                             doGenerateSubmoduleConfigurations: false,
                             extensions: [[$class: 'CheckoutOption', timeout: 60], [$class: 'CloneOption', depth: 0, noTags: true, reference: '', shallow: false,
                             timeout: 60]], submoduleCfg: [],
@@ -81,10 +81,10 @@ pipeline {
                                 echo "file exists: ${env.BSL_LS_PROPERTIES}"
                             }
 
-                            if (git_repo_branch == 'master') {
-                                PROJECT_KEY = PROJECT_NAME
+                            if (env.git_repo_branch == 'master') {
+                                PROJECT_KEY = env.PROJECT_NAME
                             } else {
-                                PROJECT_KEY = "${PROJECT_NAME}_${git_repo_branch}"
+                                PROJECT_KEY = "${env.PROJECT_NAME}_${env.git_repo_branch}"
                             }
                         }
                     }}
@@ -149,7 +149,7 @@ pipeline {
                     Exception caughtException = null
 
                     try { timeout(time: env.TIMEOUT_FOR_ACC_STAGE.toInteger(), unit: 'MINUTES') {
-                        def command = "${env.JAVA_11_BIN}/java -Xmx8g -jar ${BIN_CATALOG}bsl-language-server.jar -a -s \"${SRC}\" -r generic"
+                        def command = "${env.JAVA_11_HOME}/bin/java -Xmx8g -jar ${BIN_CATALOG}bsl-language-server.jar -a -s \"${SRC}\" -r generic"
                         command = command + " -c \"${env.BSL_LS_PROPERTIES}\" -o \"${TEMP_CATALOG}\""
 
                         returnCode = commonMethods.cmdReturnStatusCode(command)
@@ -188,9 +188,11 @@ pipeline {
                                 -Dsonar.sources=\"${SRC}\" -Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON}
                                 -Dsonar.sourceEncoding=UTF-8 -Dsonar.inclusions=**/*.bsl
                                 -Dsonar.bsl.languageserver.enabled=false"""
-                            /*if (!perf_catalog.isEmpty()) {
-                                scanner_properties = "${scanner_properties} -Dsonar.coverageReportPaths=\"${TEMP_CATALOG}\\genericCoverage.xml\""
-                            }*/
+                                
+                                /*if (!perf_catalog.isEmpty()) {
+                                    scanner_properties = "${scanner_properties} -Dsonar.coverageReportPaths=\"${TEMP_CATALOG}\\genericCoverage.xml\""
+                                }*/
+                                
                                 def scannerHome = tool 'SonarQubeScanner';
                                 def command = """
                                 @set SRC=\"${SRC}\"
@@ -199,7 +201,7 @@ pipeline {
                                 @set /p SONAR_PROJECTVERSION=<temp_SONAR_PROJECTVERSION
                                 @DEL temp_SONAR_PROJECTVERSION
                                 @echo %SONAR_PROJECTVERSION%
-                                @set JAVA_HOME=${sonar_catalog}\\jdk\\
+                                @set JAVA_HOME=${env.JAVA_11_HOME}\\
                                 @set SONAR_SCANNER_OPTS=-Xmx6g
                                 ${scannerHome}\\bin\\sonar-scanner ${scanner_properties} -Dfile.encoding=UTF-8"""
                                 

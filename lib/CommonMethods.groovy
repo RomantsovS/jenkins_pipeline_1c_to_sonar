@@ -111,13 +111,9 @@ def cmdReturnStatusCode(command) {
     def statusCode = 0
 
     if (isUnix()) {
-        statusCode = sh script: "${command}",
-                        returnStatus: true
+        statusCode = sh script: "${command}", returnStatus: true
     } else {
-        statusCode = bat script:
-                        """chcp 65001 > null
-                        ${command}""",
-                     returnStatus: true
+        statusCode = bat script: "chcp 65001\n${command}", returnStatus: true
     }
 
     return statusCode

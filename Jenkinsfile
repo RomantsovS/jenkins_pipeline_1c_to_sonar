@@ -228,12 +228,12 @@ pipeline {
                 }
             }
         }
+    }
 
-        post {
-            always {
-                script {
-                    commonMethods.emailJobStatus ("SONAR STATUS")
-                }
+    post {
+        always {
+            script {
+                commonMethods.emailJobStatus ("SONAR STATUS")
             }
         }
     }

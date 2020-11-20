@@ -47,6 +47,9 @@ pipeline {
                         writeFile file: 'acc.json', text: '{"issues": []}'
                         writeFile file: 'bsl-generic-json.json', text: '{"issues": []}'
                     }
+
+                    echo "ACC_stage " ACC_stage
+                    echo "env.ACC_stage " env.ACC_stage
                 }
             }
         }

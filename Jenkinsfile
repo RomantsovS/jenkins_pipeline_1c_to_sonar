@@ -63,7 +63,7 @@ pipeline {
                             doGenerateSubmoduleConfigurations: false,
                             extensions: [[$class: 'CheckoutOption', timeout: 60], [$class: 'CloneOption', depth: 0, noTags: true, reference: '', shallow: false,
                             timeout: 60]], submoduleCfg: [],
-                            userRemoteConfigs: [[credentialsId: gitlab_credentials_Id, url: git_repo_url]]])
+                            userRemoteConfigs: [[/*credentialsId: gitlab_credentials_Id,*/ url: git_repo_url]]])
 
                             load "./${PROPERTIES_CATALOG}/SetEnvironmentVars.groovy"
 

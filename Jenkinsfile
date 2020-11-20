@@ -48,8 +48,8 @@ pipeline {
                         writeFile file: 'bsl-generic-json.json', text: '{"issues": []}'
                     }
 
-                    echo "ACC_stage " ACC_stage
-                    echo "env.ACC_stage " env.ACC_stage
+                    echo "ACC_stage ${ACC_stage}"
+                    echo "env.ACC_stage ${env.ACC_stage}"
                 }
             }
         }

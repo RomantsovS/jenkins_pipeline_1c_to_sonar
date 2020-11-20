@@ -7,6 +7,7 @@ def TEMP_CATALOG = ''
 def PROJECT_KEY = ''
 def JAVA_11_BIN = ''
 def GENERIC_ISSUE_JSON = ''
+def CURRENT_CATALOG = ''
 
 pipeline {
 
@@ -105,7 +106,7 @@ pipeline {
         }
 
         stage('ACC') {
-            when { expression {ACC_stage} }
+            when { expression {ACC_stage == TRUE} }
 
             steps {
                 script {
@@ -152,14 +153,14 @@ pipeline {
         }
 
         stage('bsl-language-server') {
-            when { expression {BSL_server_stage} }
+            when { expression {BSL_server_stage == TRUE} }
 
             steps {
                 script {
                     Exception caughtException = null
 
                     try { timeout(time: env.TIMEOUT_FOR_ACC_STAGE.toInteger(), unit: 'MINUTES') {
-                        def command = "${env.JAVA_11_HOME}/bin/java -Xmx8g -jar ${BIN_CATALOG}bsl-language-server.jar -a -s \"src\" -r generic"
+                        def command = "${env.JAVA_11_HOME}/bin/java -Xmx8g -jar ${BIN_CATALOG}bsl-language-server.jar -a -s \"${CURRENT_CATALOG/Repo/src}\" -r generic"
                         command = command + " -c \"${env.BSL_LS_PROPERTIES}\" -o \"${TEMP_CATALOG}\""
 
                         returnCode = commonMethods.cmdReturnStatusCode(command)
@@ -193,7 +194,7 @@ pipeline {
         }
 
         stage('Sonar scanner') {
-            when { expression {Sonar_stage} }
+            when { expression {Sonar_stage == TRUE} }
 
             steps {
                 script {

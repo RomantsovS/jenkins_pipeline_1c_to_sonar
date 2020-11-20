@@ -249,7 +249,7 @@ pipeline {
     post {
         always {
             script {
-                commonMethods.emailJobStatus ("SONAR STATUS")
+                commonMethods.emailJobStatus ("")
             }
         }
     }

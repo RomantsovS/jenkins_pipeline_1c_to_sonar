@@ -13,6 +13,7 @@ pipeline {
 
     parameters {
         string(defaultValue: "${env.git_repo_url}", description: '* URL к гит-репозиторию, который необходимо проверить.', name: 'git_repo_url')
+        string(defaultValue: "${env.gitlab_credentials_Id}", description: 'ID Credentials для получения изменений из гит-репозитория', name: 'gitlab_credentials_Id')
         booleanParam(defaultValue: env.ACC_stage == null ? true : env.ACC_stage, description: 'Выполнять ли шаг проверки АПК в целом. По умолчанию: true', name: 'ACC_stage')
         booleanParam(defaultValue: env.ACC_check == null ? true : env.ACC_check, description: 'Выполнять ли проверку АПК. Если нет, то будут получены существующие результаты. По умолчанию: true', name: 'ACC_check')
         booleanParam(defaultValue: env.ACC_recreateProject == null ? false : env.ACC_recreateProject, description: 'Пересоздать проект в АПК. Все данные о проекте будут собраны заново. По умолчанию: false', name: 'ACC_recreateProject')

@@ -106,7 +106,7 @@ pipeline {
         }
 
         stage('ACC') {
-            when { expression {ACC_stage == TRUE} }
+            when { expression {params.ACC_stage} }
 
             steps {
                 script {
@@ -153,7 +153,7 @@ pipeline {
         }
 
         stage('bsl-language-server') {
-            when { expression {BSL_server_stage == TRUE} }
+            when { expression {params.BSL_server_stage} }
 
             steps {
                 script {
@@ -194,7 +194,7 @@ pipeline {
         }
 
         stage('Sonar scanner') {
-            when { expression {Sonar_stage == TRUE} }
+            when { expression {params.Sonar_stage} }
 
             steps {
                 script {

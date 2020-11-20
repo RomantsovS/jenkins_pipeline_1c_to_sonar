@@ -3,7 +3,6 @@ def ACC_PROPERTIES = ''
 def ACC_BASE = ''
 def ACC_USER = ''
 def BSL_LS_PROPERTIES = ''
-def CURRENT_CATALOG = ''
 def TEMP_CATALOG = ''
 def PROJECT_KEY = ''
 def JAVA_11_BIN = ''
@@ -39,7 +38,6 @@ pipeline {
                         
                     CURRENT_CATALOG = pwd()
                     TEMP_CATALOG = "${CURRENT_CATALOG}\\sonar_temp"
-                    SRC = "${CURRENT_CATALOG}/Repo/src"
 
                     // создаем/очищаем временный каталог
                     dir(TEMP_CATALOG) {
@@ -47,9 +45,6 @@ pipeline {
                         writeFile file: 'acc.json', text: '{"issues": []}'
                         writeFile file: 'bsl-generic-json.json', text: '{"issues": []}'
                     }
-
-                    echo "Sonar_stage ${Sonar_stage}"
-                    echo "env.Sonar_stage ${env.Sonar_stage}"
                 }
             }
         }
@@ -117,7 +112,7 @@ pipeline {
                     Exception caughtException = null
 
                     try { timeout(time: env.TIMEOUT_FOR_ACC_STAGE.toInteger(), unit: 'MINUTES') {
-                        def cmd_properties = "\"acc.propertiesPaths=${env.ACC_PROPERTIES};acc.catalog=${CURRENT_CATALOG}/Repo;acc.sources=${SRC};"
+                        def cmd_properties = "\"acc.propertiesPaths=${env.ACC_PROPERTIES};acc.catalog=./;acc.sources=src;"
                         cmd_properties = cmd_properties + "acc.result=${TEMP_CATALOG}\\acc.json;acc.projectKey=${PROJECT_KEY};acc.check=${ACC_check};"
                         cmd_properties = cmd_properties + "acc.recreateProject=${ACC_recreateProject}\""
                         
@@ -207,10 +202,7 @@ pipeline {
                     try { timeout(time: env.TIMEOUT_FOR_ACC_STAGE.toInteger(), unit: 'MINUTES') {
                         dir('Repo') {
                             withSonarQubeEnv('Sonar') {
-                                def scanner_properties = """-X -Dsonar.projectVersion=%SONAR_PROJECTVERSION% -Dsonar.projectKey=${PROJECT_KEY}
-                                -Dsonar.sources=\"${SRC}\" 
-                                -Dsonar.sourceEncoding=UTF-8 -Dsonar.inclusions=**/*.bsl
-                                -Dsonar.bsl.languageserver.enabled=false"""
+                                def scanner_properties = " -Dsonar.bsl.languageserver.enabled=false"
 
                                 if(GENERIC_ISSUE_JSON != '') {
                                     scanner_properties = scanner_properties + "-Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON}"
@@ -227,7 +219,7 @@ pipeline {
                                 @echo %SONAR_PROJECTVERSION%
                                 @set JAVA_HOME=${env.JAVA_11_HOME}\\
                                 @set SONAR_SCANNER_OPTS=-Xmx6g
-                                ${scannerHome}\\bin\\sonar-scanner ${scanner_properties} -Dfile.encoding=UTF-8"""
+                                ${scannerHome}\\bin\\sonar-scanner ${scanner_properties}"""
                                 
                                 returnCode = commonMethods.cmdReturnStatusCode(command)
     

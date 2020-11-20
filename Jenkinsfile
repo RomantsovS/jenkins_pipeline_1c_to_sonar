@@ -44,7 +44,7 @@ pipeline {
                     dir(TEMP_CATALOG) {
                         deleteDir()
                         writeFile file: 'acc.json', text: '{"issues": []}'
-                        writeFile file: 'bsl-generic-json.json', text: '{"issues": []}'
+                        writeFile file: 'bsl-json.json', text: '{"issues": []}'
                     }
                 }
             }
@@ -134,7 +134,7 @@ pipeline {
                             GENERIC_ISSUE_JSON = GENERIC_ISSUE_JSON + ","
                         }
 
-                        GENERIC_ISSUE_JSON = "${TEMP_CATALOG}/acc.json"                        
+                        GENERIC_ISSUE_JSON = GENERIC_ISSUE_JSON + "${TEMP_CATALOG}/acc.json"                        
                     }}
                     catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException excp) {
                         if (commonMethods.isTimeoutException(excp)) {
@@ -175,7 +175,7 @@ pipeline {
                             GENERIC_ISSUE_JSON = GENERIC_ISSUE_JSON + ","
                         }
 
-                        GENERIC_ISSUE_JSON = "${TEMP_CATALOG}/bsl-generic-json.json"
+                        GENERIC_ISSUE_JSON = GENERIC_ISSUE_JSON + "${TEMP_CATALOG}/bsl-json.json"
                     }}
                     catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException excp) {
                         if (commonMethods.isTimeoutException(excp)) {

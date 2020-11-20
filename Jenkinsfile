@@ -12,8 +12,11 @@ pipeline {
 
     parameters {
         string(defaultValue: "${env.git_repo_url}", description: '* URL к гит-репозиторию, который необходимо проверить.', name: 'git_repo_url')
-        booleanParam(defaultValue: env.ACC_check== null ? true : env.ACC_check, description: 'Выполнять ли проверку АПК. Если нет, то будут получены существующие результаты. По умолчанию: true', name: 'ACC_check')
-        booleanParam(defaultValue: env.ACC_recreateProject== null ? false : env.ACC_recreateProject, description: 'Пересоздать проект в АПК. Все данные о проекте будут собраны заново. По умолчанию: false', name: 'ACC_recreateProject')
+        booleanParam(defaultValue: env.ACC_stage == null ? true : env.ACC_stage, description: 'Выполнять ли шаг проверки АПК в целом. По умолчанию: true', name: 'ACC_stage')
+        booleanParam(defaultValue: env.ACC_check == null ? true : env.ACC_check, description: 'Выполнять ли проверку АПК. Если нет, то будут получены существующие результаты. По умолчанию: true', name: 'ACC_check')
+        booleanParam(defaultValue: env.ACC_recreateProject == null ? false : env.ACC_recreateProject, description: 'Пересоздать проект в АПК. Все данные о проекте будут собраны заново. По умолчанию: false', name: 'ACC_recreateProject')
+        booleanParam(defaultValue: env.BSL_server_stage == null ? true : env.BSL_server_stage, description: 'Выполнять ли шаг проверки BSL-server в целом. По умолчанию: true', name: 'BSL_server_stage')
+        booleanParam(defaultValue: env.Sonar_stage == null ? true : env.BSL_server_stage, description: 'Выполнять ли шаг Sonar. По умолчанию: true', name: 'Sonar_stage')
         string(defaultValue: "${env.jenkinsAgent}", description: 'Нода дженкинса, на которой запускать пайплайн. По умолчанию master', name: 'jenkinsAgent')
     }
     agent {
@@ -43,10 +46,8 @@ pipeline {
                         writeFile file: 'acc.json', text: '{"issues": []}'
                         writeFile file: 'bsl-generic-json.json', text: '{"issues": []}'
                     }
-
-                    GENERIC_ISSUE_JSON ="${TEMP_CATALOG}/acc.json,${TEMP_CATALOG}/bsl-generic-json.json"
-                    }
                 }
+            }
         }
 
         stage('Checkout') {
@@ -105,6 +106,8 @@ pipeline {
         }
 
         stage('ACC') {
+            when { expression {ACC_stage == true} }
+
             steps {
                 script {
                     Exception caughtException = null
@@ -126,6 +129,12 @@ pipeline {
                         if (returnCode != 0) {
                             commonMethods.echoAndError("Error running ACC ${ACC_BASE_NAME} at ${ACC_BASE_SERVER1C}")
                         }
+
+                        if(GENERIC_ISSUE_JSON != '') {
+                            GENERIC_ISSUE_JSON = GENERIC_ISSUE_JSON + ","
+                        }
+
+                        GENERIC_ISSUE_JSON = "${TEMP_CATALOG}/acc.json"                        
                     }}
                     catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException excp) {
                         if (commonMethods.isTimeoutException(excp)) {
@@ -144,6 +153,8 @@ pipeline {
         }
 
         stage('bsl-language-server') {
+            when { expression {BSL_server_stage == true} }
+
             steps {
                 script {
                     Exception caughtException = null
@@ -159,6 +170,12 @@ pipeline {
                         if (returnCode != 0) {
                             commonMethods.echoAndError("Error running bsl-language-server ${BIN_CATALOG} at ${TEMP_CATALOG}")
                         }
+
+                        if(GENERIC_ISSUE_JSON != '') {
+                            GENERIC_ISSUE_JSON = GENERIC_ISSUE_JSON + ","
+                        }
+
+                        GENERIC_ISSUE_JSON = "${TEMP_CATALOG}/bsl-generic-json.json"
                     }}
                     catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException excp) {
                         if (commonMethods.isTimeoutException(excp)) {
@@ -177,6 +194,8 @@ pipeline {
         }
 
         stage('Sonar scanner') {
+            when { expression {Sonar_stage == true} }
+
             steps {
                 script {
                     Exception caughtException = null

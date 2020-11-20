@@ -198,7 +198,7 @@ pipeline {
         }
 
         stage('Sonar scanner') {
-            when { expression {Sonar_stage == true} }
+            when { Sonar_stage }
 
             steps {
                 script {

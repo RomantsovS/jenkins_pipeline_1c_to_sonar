@@ -202,10 +202,10 @@ pipeline {
                     try { timeout(time: env.TIMEOUT_FOR_ACC_STAGE.toInteger(), unit: 'MINUTES') {
                         dir('Repo') {
                             withSonarQubeEnv('Sonar') {
-                                def scanner_properties = " -Dsonar.bsl.languageserver.enabled=false"
+                                def scanner_properties = "-Dsonar.bsl.languageserver.enabled=false"
 
                                 if(GENERIC_ISSUE_JSON != '') {
-                                    scanner_properties = scanner_properties + "-Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON}"
+                                    scanner_properties = scanner_properties + " -Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON}"
                                 }
 
                                 /*if (!perf_catalog.isEmpty()) {
@@ -214,9 +214,6 @@ pipeline {
                                 
                                 def scannerHome = tool 'SonarQubeScanner';
                                 def command = """
-                                @set SRC=\"${SRC}\"
-                                @echo %SRC%
-                                @echo %SONAR_PROJECTVERSION%
                                 @set JAVA_HOME=${env.JAVA_11_HOME}\\
                                 @set SONAR_SCANNER_OPTS=-Xmx6g
                                 ${scannerHome}\\bin\\sonar-scanner ${scanner_properties}"""

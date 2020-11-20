@@ -7,6 +7,7 @@ def CURRENT_CATALOG = ''
 def TEMP_CATALOG = ''
 def PROJECT_KEY = ''
 def JAVA_11_BIN = ''
+def GENERIC_ISSUE_JSON = ''
 
 pipeline {
 
@@ -204,10 +205,14 @@ pipeline {
                         dir('Repo') {
                             withSonarQubeEnv('Sonar') {
                                 def scanner_properties = """-X -Dsonar.projectVersion=%SONAR_PROJECTVERSION% -Dsonar.projectKey=${PROJECT_KEY}
-                                -Dsonar.sources=\"${SRC}\" -Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON}
+                                -Dsonar.sources=\"${SRC}\" 
                                 -Dsonar.sourceEncoding=UTF-8 -Dsonar.inclusions=**/*.bsl
                                 -Dsonar.bsl.languageserver.enabled=false"""
-                                
+
+                                if(GENERIC_ISSUE_JSON != '') {
+                                    scanner_properties = scanner_properties + "-Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON}"
+                                }
+
                                 /*if (!perf_catalog.isEmpty()) {
                                     scanner_properties = "${scanner_properties} -Dsonar.coverageReportPaths=\"${TEMP_CATALOG}\\genericCoverage.xml\""
                                 }*/

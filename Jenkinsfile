@@ -17,7 +17,7 @@ pipeline {
         booleanParam(defaultValue: env.ACC_check == null ? true : env.ACC_check, description: 'Выполнять ли проверку АПК. Если нет, то будут получены существующие результаты. По умолчанию: true', name: 'ACC_check')
         booleanParam(defaultValue: env.ACC_recreateProject == null ? false : env.ACC_recreateProject, description: 'Пересоздать проект в АПК. Все данные о проекте будут собраны заново. По умолчанию: false', name: 'ACC_recreateProject')
         booleanParam(defaultValue: env.BSL_server_stage == null ? true : env.BSL_server_stage, description: 'Выполнять ли шаг проверки BSL-server в целом. По умолчанию: true', name: 'BSL_server_stage')
-        booleanParam(defaultValue: env.Sonar_stage == null ? true : env.BSL_server_stage, description: 'Выполнять ли шаг Sonar. По умолчанию: true', name: 'Sonar_stage')
+        booleanParam(defaultValue: env.Sonar_stage == null ? true : env.Sonar_stage, description: 'Выполнять ли шаг Sonar. По умолчанию: true', name: 'Sonar_stage')
         string(defaultValue: "${env.jenkinsAgent}", description: 'Нода дженкинса, на которой запускать пайплайн. По умолчанию master', name: 'jenkinsAgent')
     }
     agent {
@@ -198,7 +198,7 @@ pipeline {
         }
 
         stage('Sonar scanner') {
-            when { Sonar_stage }
+            when { expression {Sonar_stage} }
 
             steps {
                 script {

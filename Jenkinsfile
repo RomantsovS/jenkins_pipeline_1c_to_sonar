@@ -206,7 +206,7 @@ pipeline {
                                 def scanner_properties = "-Dsonar.bsl.languageserver.enabled=false"
 
                                 if(GENERIC_ISSUE_JSON != '') {
-                                    scanner_properties = scanner_properties + " -Dsonar.externalIssuesReportPaths=${GENERIC_ISSUE_JSON}"
+                                    scanner_properties = scanner_properties + " -Dsonar.bsl.languageserver.reportPaths=${GENERIC_ISSUE_JSON}"
                                 }
 
                                 /*if (!perf_catalog.isEmpty()) {

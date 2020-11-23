@@ -9,8 +9,10 @@ env.STEBI_SETTINGS = ""
 
 env.TIMEOUT_FOR_CHECKOUT_STAGE = "5"
 
-//параметры для переопределения
+//параметры для переопределения в одноименном файле в репозитории проекта в каталоге env.PROPERTIES_CATALOG/
 env.TIMEOUT_FOR_ACC_STAGE = "60"
+env.TIMEOUT_FOR_BSL_SERVER_STAGE = "60"
+env.TIMEOUT_FOR_SONAR_STAGE = "60"
 
 env.ACC_PROPERTIES = "./acc.properties"
 env.BSL_LS_PROPERTIES = "./bsl-language-server.conf"

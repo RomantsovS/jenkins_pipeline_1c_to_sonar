@@ -160,7 +160,7 @@ pipeline {
                 script {
                     Exception caughtException = null
 
-                    try { timeout(time: env.TIMEOUT_FOR_ACC_STAGE.toInteger(), unit: 'MINUTES') {
+                    try { timeout(time: env.TIMEOUT_FOR_BSL_SERVER_STAGE.toInteger(), unit: 'MINUTES') {
                         def command = "${env.JAVA_11_HOME}/bin/java -Xmx8g -jar ${BIN_CATALOG}bsl-language-server.jar -a -s \"${CURRENT_CATALOG}/Repo/src\" -r json"
                         command = command + " -c \"${env.BSL_LS_PROPERTIES}\" -o \"${TEMP_CATALOG}\""
 
@@ -201,7 +201,7 @@ pipeline {
                 script {
                     Exception caughtException = null
 
-                    try { timeout(time: env.TIMEOUT_FOR_ACC_STAGE.toInteger(), unit: 'MINUTES') {
+                    try { timeout(time: env.TIMEOUT_FOR_SONAR_STAGE.toInteger(), unit: 'MINUTES') {
                         dir('Repo') {
                             withSonarQubeEnv('Sonar') {
                                 def scanner_properties = "-Dsonar.bsl.languageserver.enabled=false"

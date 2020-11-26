@@ -7,7 +7,7 @@ env.JAVA_11_HOME = sonar_catalog + "/jdk-11.0.2"
 env.PROPERTIES_CATALOG = "./sonar"
 env.STEBI_SETTINGS = ""
 
-env.TIMEOUT_FOR_CHECKOUT_STAGE = "5"
+env.TIMEOUT_FOR_CHECKOUT_STAGE = "60"
 
 //параметры для переопределения в одноименном файле в репозитории проекта в каталоге env.PROPERTIES_CATALOG/
 env.TIMEOUT_FOR_ACC_STAGE = "60"

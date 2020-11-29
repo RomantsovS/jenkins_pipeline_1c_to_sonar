@@ -2,7 +2,7 @@ env.VERBOSE = "true"
 env.EMAIL_ADDRESS_FOR_NOTIFICATIONS = "romantsov_s@rusklimat.ru"
 
 env.git_repo_branch = "master"
-env.sonar_catalog = "C:/Sonar"
+env.sonar_catalog = "E:/Sonarqube"
 env.JAVA_11_HOME = sonar_catalog + "/jdk-11.0.2"
 env.PROPERTIES_CATALOG = "./sonar"
 env.STEBI_SETTINGS = ""

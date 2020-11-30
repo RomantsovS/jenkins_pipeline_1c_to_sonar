@@ -161,7 +161,7 @@ pipeline {
                     Exception caughtException = null
 
                     try { timeout(time: env.TIMEOUT_FOR_BSL_SERVER_STAGE.toInteger(), unit: 'MINUTES') {
-                        def command = "${env.JAVA_11_HOME}/bin/java -Xmx16g -jar ${BIN_CATALOG}bsl-language-server.jar -a -s \"${CURRENT_CATALOG}/Repo/src\" -r json"
+                        def command = "${env.JAVA_11_HOME}/bin/java -Xmx${env.BSL_SERVER_JAVA_PROCESS_MEMORY}g -jar ${BIN_CATALOG}bsl-language-server.jar -a -s \"${CURRENT_CATALOG}/Repo/src\" -r json"
                         command = command + " -c \"${env.BSL_LS_PROPERTIES}\" -o \"${TEMP_CATALOG}\""
 
                         returnCode = commonMethods.cmdReturnStatusCode(command)

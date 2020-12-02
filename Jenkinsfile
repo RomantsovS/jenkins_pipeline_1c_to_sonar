@@ -16,6 +16,7 @@ pipeline {
         string(defaultValue: "${env.gitlab_credentials_Id}", description: 'ID Credentials для получения изменений из гит-репозитория', name: 'gitlab_credentials_Id')
         booleanParam(defaultValue: env.ACC_stage == null ? true : env.ACC_stage, description: 'Выполнять ли шаг проверки АПК в целом. По умолчанию: true', name: 'ACC_stage')
         booleanParam(defaultValue: env.ACC_check == null ? true : env.ACC_check, description: 'Выполнять ли проверку АПК. Если нет, то будут получены существующие результаты. По умолчанию: true', name: 'ACC_check')
+        booleanParam(defaultValue: env.ACC_issues_to_sonar == null ? true : env.ACC_issues_to_sonar, description: 'Передавать ли результаты АПК в Sonar. По умолчанию: true', name: 'ACC_issues_to_sonar')
         booleanParam(defaultValue: env.ACC_recreateProject == null ? false : env.ACC_recreateProject, description: 'Пересоздать проект в АПК. Все данные о проекте будут собраны заново. По умолчанию: false', name: 'ACC_recreateProject')
         booleanParam(defaultValue: env.BSL_server_stage == null ? true : env.BSL_server_stage, description: 'Выполнять ли шаг проверки BSL-server в целом. По умолчанию: true', name: 'BSL_server_stage')
         booleanParam(defaultValue: env.Sonar_stage == null ? true : env.Sonar_stage, description: 'Выполнять ли шаг Sonar. По умолчанию: true', name: 'Sonar_stage')
@@ -131,11 +132,13 @@ pipeline {
                             commonMethods.echoAndError("Error running ACC ${ACC_BASE_NAME} at ${ACC_BASE_SERVER1C}")
                         }
 
-                        if(GENERIC_ISSUE_JSON != '') {
-                            GENERIC_ISSUE_JSON = GENERIC_ISSUE_JSON + ","
-                        }
+                        if(env.ACC_issues_to_sonar) {
+                            if(GENERIC_ISSUE_JSON != '') {
+                                GENERIC_ISSUE_JSON = GENERIC_ISSUE_JSON + ","
+                            }
 
-                        GENERIC_ISSUE_JSON = GENERIC_ISSUE_JSON + "${TEMP_CATALOG}/acc.json"                        
+                            GENERIC_ISSUE_JSON = GENERIC_ISSUE_JSON + "${TEMP_CATALOG}/acc.json"                        
+                        }
                     }}
                     catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException excp) {
                         if (commonMethods.isTimeoutException(excp)) {

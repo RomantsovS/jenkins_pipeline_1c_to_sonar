@@ -132,7 +132,7 @@ pipeline {
                             commonMethods.echoAndError("Error running ACC ${ACC_BASE_NAME} at ${ACC_BASE_SERVER1C}")
                         }
 
-                        if(env.ACC_issues_to_sonar) {
+                        if(params.ACC_issues_to_sonar) {
                             if(GENERIC_ISSUE_JSON != '') {
                                 GENERIC_ISSUE_JSON = GENERIC_ISSUE_JSON + ","
                             }

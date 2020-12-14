@@ -11,7 +11,7 @@ env.TIMEOUT_FOR_CHECKOUT_STAGE = "60"
 
 //параметры для переопределения в одноименном файле в репозитории проекта в каталоге env.PROPERTIES_CATALOG/
 env.TIMEOUT_FOR_ACC_STAGE = "1500"
-env.TIMEOUT_FOR_BSL_SERVER_STAGE = "600"
+env.TIMEOUT_FOR_BSL_SERVER_STAGE = "800"
 env.TIMEOUT_FOR_SONAR_STAGE = "1500"
 
 env.BSL_SERVER_JAVA_PROCESS_MEMORY = "16" // Память для ява процесса в ГБ

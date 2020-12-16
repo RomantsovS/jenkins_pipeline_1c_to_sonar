@@ -28,7 +28,7 @@ pipeline {
     options {
         buildDiscarder(logRotator(numToKeepStr: '7'))
         timestamps()
-        timeout(time: 8, unit: 'HOURS')
+        //timeout(time: 8, unit: 'HOURS')
     }
     stages {
         stage("Инициализация переменных") {

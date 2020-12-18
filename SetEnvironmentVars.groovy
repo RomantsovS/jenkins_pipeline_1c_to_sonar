@@ -14,8 +14,8 @@ env.TIMEOUT_FOR_ACC_STAGE = "1500"
 env.TIMEOUT_FOR_BSL_SERVER_STAGE = "800"
 env.TIMEOUT_FOR_SONAR_STAGE = "1500"
 
-env.BSL_SERVER_JAVA_PROCESS_MEMORY = "16" // Память для ява процесса в ГБ
-env.SONAR_SCANNER_OPTS_JAVA_PROCESS_MEMORY = "16" // Память для ява процесса в ГБ
+env.BSL_SERVER_JAVA_PROCESS_MEMORY = "20" // Память для ява процесса в ГБ
+env.SONAR_SCANNER_OPTS_JAVA_PROCESS_MEMORY = "20" // Память для ява процесса в ГБ
 
 env.ACC_PROPERTIES = "./acc.properties"
 env.BSL_LS_PROPERTIES = "./bsl-language-server.conf"

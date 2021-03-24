@@ -122,7 +122,7 @@ pipeline {
                         def ib_connection = "/S${env.ACC_BASE_SERVER1C}\\${env.ACC_BASE_NAME}"
                         
                         def command = "runner run --ibconnection ${ib_connection} --db-user ${env.ACC_USER} --command ${cmd_properties}"
-                        command = command + " --execute \"./acc-export.epf\" --ordinaryapp=1"
+                        command = command + " --v8version ${env.PLATFORM_1C_VERSION} --execute \"./acc-export.epf\" --ordinaryapp=1"
 
                         returnCode = commonMethods.cmdReturnStatusCode(command)
     

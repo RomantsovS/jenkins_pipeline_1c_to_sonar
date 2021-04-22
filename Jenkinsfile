@@ -115,7 +115,7 @@ pipeline {
                     Exception caughtException = null
 
                     try { timeout(time: env.TIMEOUT_FOR_ACC_STAGE.toInteger(), unit: 'MINUTES') {
-                        def cmd_properties = "\"acc.propertiesPaths=${env.ACC_PROPERTIES};acc.catalog=./;acc.sources=src;"
+                        def cmd_properties = "\"acc.propertiesPaths=${env.ACC_PROPERTIES};acc.catalog=./;acc.sources=Repo/src;"
                         cmd_properties = cmd_properties + "acc.result=${TEMP_CATALOG}\\acc.json;acc.projectKey=${PROJECT_KEY};acc.check=${ACC_check};"
                         cmd_properties = cmd_properties + "acc.recreateProject=${ACC_recreateProject}\""
                         

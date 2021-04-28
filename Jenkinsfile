@@ -75,12 +75,12 @@ pipeline {
 
                             // Настройки инструментов
                             if (fileExists("${env.WORKSPACE}/Repo/${PROPERTIES_CATALOG}/acc.properties")) {
-                                env.ACC_PROPERTIES = "./Repo/${PROPERTIES_CATALOG}/acc.properties"
+                                env.ACC_PROPERTIES = "${env.WORKSPACE}/Repo/${PROPERTIES_CATALOG}/acc.properties"
                                 echo "file exists: ${env.ACC_PROPERTIES}"
                             }
 
                             if (fileExists("${env.WORKSPACE}/Repo/.bsl-language-server.json")) {
-                                env.BSL_LS_PROPERTIES = "./Repo/.bsl-language-server.json"
+                                env.BSL_LS_PROPERTIES = "${env.WORKSPACE}/Repo/.bsl-language-server.json"
                                 echo "file exists: ${env.BSL_LS_PROPERTIES}"
                             }
 

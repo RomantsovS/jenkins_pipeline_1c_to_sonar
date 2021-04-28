@@ -221,7 +221,7 @@ pipeline {
                                 def command = """
                                 @set JAVA_HOME=${env.JAVA_11_HOME}\\
                                 @set SONAR_SCANNER_OPTS=-Xmx${env.SONAR_SCANNER_OPTS_JAVA_PROCESS_MEMORY}g
-                                ${scannerHome}\\bin\\sonar-scanner ${scanner_properties}"""
+                                ${scannerHome}\\bin\\sonar-scanner ${scanner_properties} -X"""
                                 
                                 returnCode = commonMethods.cmdReturnStatusCode(command)
     

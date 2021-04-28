@@ -20,7 +20,7 @@ env.BSL_SERVER_JAVA_PROCESS_MEMORY = "20" // Память для ява проц
 env.SONAR_SCANNER_OPTS_JAVA_PROCESS_MEMORY = "20" // Память для ява процесса в ГБ
 
 env.ACC_PROPERTIES = "./acc.properties"
-env.BSL_LS_PROPERTIES = "./bsl-language-server.json"
+env.BSL_LS_PROPERTIES = "./.bsl-language-server.json"
 env.ACC_BASE_NAME = "AutoConfigurationCheck"
 env.ACC_BASE_SERVER1C = "cv8app12:1741"
 env.ACC_USER = "Administrator"

@@ -79,8 +79,8 @@ pipeline {
                                 echo "file exists: ${env.ACC_PROPERTIES}"
                             }
 
-                            if (fileExists("${env.WORKSPACE}/Repo/bsl-language-server.json")) {
-                                env.BSL_LS_PROPERTIES = "./Repo/bsl-language-server.json"
+                            if (fileExists("${env.WORKSPACE}/Repo/.bsl-language-server.json")) {
+                                env.BSL_LS_PROPERTIES = "./Repo/.bsl-language-server.json"
                                 echo "file exists: ${env.BSL_LS_PROPERTIES}"
                             }
 

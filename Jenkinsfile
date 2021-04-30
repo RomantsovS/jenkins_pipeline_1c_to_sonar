@@ -251,9 +251,9 @@ pipeline {
     }
 
     post {
-        always {
+        failure {
             script {
-                commonMethods.emailJobStatus ("")
+                commonMethods.emailJobStatus("")
             }
         }
     }
